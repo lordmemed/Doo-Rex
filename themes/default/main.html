@@ -1,0 +1,418 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+<head>
+	<!-- Required meta tags -->
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, shrink-to-fit=no, user-scalable=no" />
+	
+	<!-- Required meta tags for web content -->
+	<meta name="author" content="<%web_author%>">
+	<meta name="description" content="<%web_desc%>">
+	<meta name="keywords" content="<%web_keyword%>">
+
+	<!-- Head page title -->
+	<title><%web_title%><%app_title%></title>
+
+	<!-- Fonts and icons -->
+	<link rel="icon" type="image/x-icon" href="<%app_icon%>" />
+	<link rel="shortcut icon" type="image/x-icon" href="<%app_icon%>" />
+
+	<!-- Style & CSS -->
+	<link rel="stylesheet" type="text/css" href="<%app_asset%>/css/style.css?time=<%time%>">
+	<!-- Themes Assets -->
+	<link rel="stylesheet" type="text/css" href="<%theme_asset%>/css/style.css?time=<%time%>">
+	<!-- <link rel="preload" href="<%theme_asset%>/js/style.js?time=<%time%>" as="script"> -->
+	<script src="<%theme_asset%>/js/style.js?time=<%time%>"></script>
+	<script src="<%app_asset%>/vendor/jquery/jquery-3.5.1.min.js"></script>
+
+</head>
+<body>
+	<header>
+		<div class="header">
+			<img src="<%app_logo%>" class="img-logo">
+			<span class="logo">
+				<div class="logo-title">
+					<%app_title%>
+				</div>
+				<div class="logo-slogan">
+					<%app_slogan%>
+				</div>
+			</span>
+		</div>
+		<nav>
+			<div class="navbar sticky">
+				<ul>
+					<li class="active">
+						<a href="<%app_home%>">Home</a>
+					</li>
+					<li>
+						<a href="<%app_home%>/manga/list">Manga List</a>
+					</li>
+					<li>
+						<a href="<%app_home%>/pages/contact">Contact</a>
+					</li>
+					<li class="nav-item-right">
+						<a href="<%app_home%>/pages/about">About</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+	</header>
+
+	<div class="wrapper">
+		<div class="page-title">
+			<%page_title%>
+		</div>
+		<div class="container">
+			<%content%>
+			
+			<section class="manga-home">
+
+				<article class="manga-item">
+					<a href="<%app_home%>" title="Apakah kau sibuk? Apakah kau bisa menyelamatkan dunia?">
+						<img src="<%app_icon%>" class="manga-cover" alt="Manga Cover" />
+						<div class="manga-meta">
+							<div class="manga-title">Apakah kau sibuk? Apakah kau bisa menyelamatkan dunia?</div>
+							<div class="manga-title-alt">Alt. : SukaSuka</div>
+							<div class="manga-author">Author : Watanabe Jun</div>
+							<div class="manga-artist">Artist : Aotori</div>
+							<div class="manga-status">Status : Completed</div>
+							<div class="manga-rating">Rating : 7.8 / 10</div>
+							<div class="manga-view">1.765 Views</div>
+						</div>
+					</a>
+				</article>
+			
+			</section>
+			<section class="manga-list">
+
+				<article>
+					<ul>
+						<li></li>
+					</ul>
+				</article>
+			
+			</section>
+			<section class="manga-detail">
+
+				<article class="details">
+					<img class="manga-detail-cover" src="<%app_icon%>" alt="Manga Cover" />
+					<table>
+						<tr>
+							<td>Title</td>
+							<td> : </td>
+							<td class="manga-title">Apakah kau sibuk? Apakah kau bisa menyelamatkan dunia?</td>
+						</tr>
+						<tr>
+							<td>Alt. Title</td>
+							<td> : </td>
+							<td class="manga-title-alt">SukaSuka</td>
+						</tr>
+						<tr>
+							<td>Author</td>
+							<td> : </td>
+							<td class="manga-author">Watanabe Jun</td>
+						</tr>
+						<tr>
+							<td>Artist</td>
+							<td> : </td>
+							<td class="manga-artist">Aotori</td>
+						</tr>
+						<tr>
+							<td>Status</td>
+							<td> : </td>
+							<td class="manga-status">Completed</td>
+						</tr>
+						<tr>
+							<td>Rating</td>
+							<td> : </td>
+							<td class="manga-rating">7.8 / 10</td>
+						</tr>
+						<tr>
+							<td>Total View</td>
+							<td> : </td>
+							<td class="manga-view">1.765 Views</td>
+						</tr>
+						<tr>
+							<td>Uploaded By</td>
+							<td> : </td>
+							<td class="manga-uploader"><a href="#">Member/Group</a></td>
+						</tr>
+						<tr>
+							<td>Format</td>
+							<td>:</td>
+							<td class="manga-format">Manga</td>
+						</tr>
+						<tr>
+							<td>Genre</td>
+							<td>:</td>
+							<td class="manga-genre">Action, Adventure, Comedy, Romance</td>
+						</tr>
+						<tr>
+							<td>Description</td>
+							<td>:</td>
+							<td class="manga-description">Description</td>
+						</tr>
+					</table>
+				</article>
+				<article class="chapters">
+					<div class="chapter-list hide-scroll">
+						<div>
+							<a href="<%app_home%>/manga/1/chapter/1">Chapter 1<span style="float: right;">20 July 2020</span></a>
+							
+						</div>
+						<div><a href="<%app_home%>/manga/1/chapter/2">Chapter 2</a></div>
+						<div><a href="<%app_home%>/manga/1/chapter/3">Chapter 3</a></div>
+						<div><a href="<%app_home%>/manga/1/chapter/4">Chapter 4</a></div>
+						<div><a href="<%app_home%>/manga/1/chapter/5">Chapter 5</a></div>
+						<div><a href="<%app_home%>/manga/1/chapter/6">Chapter 6</a></div>
+						<div><a href="<%app_home%>/manga/1/chapter/7">Chapter 7</a></div>
+						<div><a href="<%app_home%>/manga/1/chapter/8">Chapter 8</a></div>
+						<div><a href="<%app_home%>/manga/1/chapter/9">Chapter 9</a></div>
+						<div><a href="<%app_home%>/manga/1/chapter/10">Chapter 10</a></div>
+						<div><a href="<%app_home%>/manga/1/chapter/11">Chapter 11</a></div>
+						<div><a href="<%app_home%>/manga/1/chapter/12">Chapter 12</a></div>
+					</div>
+					<div id="showChapter">Show All Chapter(s)</div>
+					<script type="text/javascript">
+					$(function() {
+					
+						var hidden=true;
+					
+						$("#showChapter").click(function() {
+							if (hidden===true) {
+								$( ".chapter-list" ).removeClass("hide-scroll");
+								$(this).text("Hide Chapter(s)");
+								hidden=false;
+							} else {
+								$( ".chapter-list" ).addClass("hide-scroll");
+								$(this).text("Show All Chapter(s)");
+								hidden=true;
+							}
+							
+						});
+					
+					});
+					</script>
+				</article>
+			</section>
+			<section class="manga-search">
+				Manga Search
+			</section>
+			<section class="manga-reader">
+				<div id="readOpt" style="display:none;">
+				<a type="button">Options</a>
+				<input id="mside" type="text" placeholder="Enter crop value (sides/left-right). e.g 20" value="" />
+				<button id="bcrop">Crop Sides</button>
+				<span id="gpt">Options</span>
+				<script>
+					$("#bcrop").click(function() {
+					$(".images img").css({"width":" "+$("#mside").val()+"%", "margin-left":"-"+($("#mside").val()/10+10)+"%", "text-align":"center"});
+					$("#gpt").text($("#mside").val());
+					});
+				</script>
+				</div>
+
+				<div class="non-member paginator">
+					<p>Sorry, only registered members are allowed to read this content.</p>
+					<p>Click the button below to login:</p>
+					<div class="back-button">
+						<a href="/member/login" class="btn btn-info">&laquo; LOGIN &raquo;</a>
+					</div>
+				</div>
+				
+				<article class="">
+					<div class="images">
+					<img class="img" src="" />
+					</div>
+					<div class="images-control">
+					<div id="pageNumber">Page <span id="currentPage">1</span> of <span id="totalPage">1</span></div>
+					<button id="prevPage">&laquo; <=</button>
+					<button id="nextPage">=> &raquo;</button>
+				
+				<script type="text/javascript">
+
+				$(function() {
+					var tN = $(".img").length,
+						iN = 1;
+					
+					var curPage = $("#currentPage"),
+						totPage = $("#totalPage");
+						
+				    totPage.text(tN);
+
+				    var nextBtn = $("#nextPage"),
+				    prevBtn = $("#prevPage");
+				            
+				    nextBtn.on('click', function(e) {
+				        var active = $(".show");
+				        var next = active.next('.img');
+				        if (next.length) {
+				            active.removeClass('show');
+				            next.addClass('show');
+
+				            $("html,body").animate({scrollTop: $("header").height()}, 500);
+				            
+				            if($("article.hr").length){
+				            	iN = iN-1;
+				            }else{ 
+				            	iN = iN+1;
+				            }
+				            
+				            curPage.text(iN);
+				            
+							if($("article.hr").length){
+								if (iN > 1 || iN < tN) {
+				    				prevBtn.prop("disabled", null);
+				    				nextBtn.prop("disabled", null);
+				    			}
+
+				    			if (iN==1) {
+				    				nextBtn.prop("disabled", true);
+				    			}
+				    			else if (iN==tN) {
+				    				prevBtn.prop("disabled", true);
+				    			}
+							}else{ 
+								if (iN > 1 || iN < tN) {
+				    				prevBtn.prop("disabled", null);
+				    				nextBtn.prop("disabled", null);
+				    			}
+
+				    			if (iN==1) {
+				    				prevBtn.prop("disabled", true);
+				    			}
+				    			if (iN==tN) {
+				    				nextBtn.prop("disabled", true);
+				    			}
+							}
+				        }
+				    });
+
+				    prevBtn.on('click', function(e) {
+				        var active = $(".show");
+				        var prev = active.prev('.img');
+				        if (prev.length) {
+				            active.removeClass('show');
+				            prev.addClass('show');
+				            
+				            $("html,body").animate({scrollTop: $("header").height()}, 500);
+
+				            if($("article.hr").length){
+				            	iN = iN+1;
+				            }else{ 
+				            	iN = iN-1;
+				            }
+				            
+				            curPage.text(iN);
+				            
+				            if($("article.hr").length){
+								if (iN > 1 || iN < tN) {
+				    				prevBtn.prop("disabled", null);
+				    				nextBtn.prop("disabled", null);
+				    			}
+
+				    			if (iN==1) {
+				    				nextBtn.prop("disabled", true);
+				    			}
+				    			else if (iN==tN) {
+				    				prevBtn.prop("disabled", true);
+				    			}
+				   		 	}else{ 
+								if (iN > 1 || iN < tN) {
+				    				prevBtn.prop("disabled", null);
+				    				nextBtn.prop("disabled", null);
+				    			}
+				    			
+								if (iN==1) {
+				    				prevBtn.prop("disabled", true);
+				    			}
+				    			else if (iN==tN) {
+				    				nextBtn.prop("disabled", true);
+				    			}
+				  		  	}
+				        }
+				    });
+				    
+				    if($("article.hr").length){
+				    	nextBtn.prop("disabled", true);
+				    }else if($("article.hl").length){
+				    	prevBtn.prop("disabled", true);
+				    }
+				});
+				</script>
+				</div>
+				</article>
+				
+				<div class="paginator">
+					<span class="prev-button">
+						<a href="#" class="btn btn-default" type="button">&laquo; Prev. Chapter</a>
+					</span>
+					<span class="next-button">
+						<a href="#" class="btn btn-default" type="button">Next Chapter &raquo;</a>
+					</span>
+						
+					<div class="paginator-selector">
+						<select class="paginator-select-page">
+							<option value="#">Chapter 1</option>
+						</select>
+					</div>
+					
+					<div class="back-button">
+						<a href="#" class="btn btn-info" type="button">&laquo; Back to Title &raquo;</a>
+					</div>
+					
+					<script type="text/javascript">
+						$(function() {
+							$('.paginator-select-page').on('change', function() {
+								document.location = $(this).val();
+							});
+							// Workaround to prevent iOS from zooming the page when clicking the select list:
+							$('.paginator-select-page').on('focus', function() {
+								if (/(iPad|iPhone|iPod)/g.test(navigator.userAgent)) {
+									$(this).css('font-size', '16px');
+								}
+							}).on('blur', function() {
+								if (/(iPad|iPhone|iPod)/g.test(navigator.userAgent)) {
+                   			 	$(this).css('font-size', '');
+                   			 }
+                   		 });
+                  	  });
+                    </script>
+				</div>
+			</section>
+		</div>
+		<div class="sidebar">
+			<div class="side-box">
+				<div class="sb-title">Widget Title</div>
+				<div class="sb-content">Widget Content</div>
+				<div class="sb-footer">Widget Footer</div>
+			</div>
+			<div class="side-box">
+				<div class="sb-content">
+					<form action="#">
+						<input type="text" name="search" style="width: 100%; margin-bottom: 4px;">
+						<button type="submit" style="width: 100%;">Search</button>
+					</form>
+				</div>
+				<div class="sb-footer">Search Bar</div>
+			</div>
+		</div>
+	</div>
+
+	<br>
+	
+	<footer>
+		<div class="copyright">
+			Manga Reader
+			&copy;
+			<script>document.write(new Date().getFullYear())</script>.
+			<br>
+			Made with <i>love</i> by
+			<a href="https://www.zulfikar.xyz" target="_blank">Mz Zulfikar</a> for a better www.
+		</div>
+		<!-- your footer here -->
+	</footer>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+	"data":
+	{
+		"tr_id":110170511,
+		"code":"BPJS",
+		"hp":"1790015005",
+		"tr_name":"M. ZAMRI",
+		"period":"01",
+		"nominal":8968000,
+		"admin":2500,
+		"ref_id":"603cb26601b5f",
+		"response_code":"00",
+		"message":"INQUIRY SUCCESS",
+		"price":8970500,
+		"selling_price":8969350,
+		"desc":{
+			"kode_cabang":"0404",
+			"nama_cabang":"DUMAI",
+			"sisa_pembayaran":"0",
+			"jumlah_peserta":"7"
+		}
+	},"meta":[]
+}

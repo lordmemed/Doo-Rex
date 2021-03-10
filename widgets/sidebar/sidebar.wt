@@ -1,0 +1,9 @@
+{
+"name" : "Side Bar",
+"data" : [
+{"title" : "Search", "content" : "search.html", "footer" : "Search content by title.", "show_title" : true,  "show_footer" : false},
+{"title" : "Calendar", "content" : "calendar.html", "footer" : "Show the the date!", "show_title" : false,  "show_footer" : false},
+{"title" : "Popular Title", "content" : "popular.html", "footer" : "List of top 5.", "show_title" : true,  "show_footer" : true},
+{"title" : "Donate", "content" : "donate.html", "footer" : "Donate to keep the web LIVE!", "show_title" : true,  "show_footer" : true}
+]
+}

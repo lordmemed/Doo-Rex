@@ -1,0 +1,38 @@
+/* Reset browser styling */
+* {
+	box-sizing: border-box;
+}
+
+html {
+	font-family: sans-serif;
+	scroll-behavior: smooth;
+}
+body {
+	margin: 0;
+	font-family: system-ui, sans-serif;
+	
+	/* this breaks position sticky in Firefox */
+	/* overflow-x: hidden; */
+}
+
+header {
+  background: #455A64;
+  text-align: center;
+}
+
+nav {
+  white-space: nowrap;
+  background: #37474F;
+}
+
+/* Main Stylesheet */
+a {
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+}
+
+form {
+	margin: 0;
+}

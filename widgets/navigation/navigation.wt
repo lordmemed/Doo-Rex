@@ -1,0 +1,10 @@
+{
+"name" : "Navigation Bar",
+"data" : 
+{
+"Home" : "/",
+"Manga List" : "manga-list",
+"Contact" : "page/contact-us",
+"About" : "page/about"
+}
+}

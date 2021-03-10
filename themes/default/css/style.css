@@ -1,0 +1,737 @@
+/* top navigation bar */
+.topnav {
+	background-color: #333;
+	overflow: hidden;
+}
+
+.topnav a {
+	float: left;
+	display: block;
+	color: #f2f2f2;
+	text-align: center;
+	text-decoration: none;
+	padding: 14px 16px;
+	font-size: 17px;
+}
+.topnav a:hover {
+	background-color: #ddd;
+	color: #000;
+}
+.topnav a.active {
+	background-color: #4CAF50;
+	color: #fff;
+	font-weight: bold;
+}
+
+.topnav .fnavbar {
+	display: none;
+}
+
+/* 
+When the screen is less than 600 pixels wide, hide all links, except for the first one ("Home").
+Show the link that containsshould open and close the topnav (.fnavbar).
+*/
+@media screen and (max-width: 600px) {
+	.topnav a:not(:first-child) {
+		display: none;
+	}
+	.topnav a.fnavbar {
+		float: right;
+		display: block;
+	}
+}
+/* 
+The "responsive" class is added to the topnav with Javascript when the user clicks on the icon.
+This class makes the topnav look good on small screens (display links vertically instead of horizontally).
+*/
+@media screen and (max-width: 600px) {
+	.topnav.responsive {
+		position: absolute;
+		right: 0;
+		top: 0;
+		width: 100%;
+	}
+	.topnav.responsive a {
+		float: none;
+		display: block;
+		text-align: left;
+	}
+}
+
+/* header contain logo, slogan, etc. */
+header {
+	background-color: #444;
+	margin 0 auto;
+}
+.header {
+	/* background-color: #f2f2f2; */
+	padding: 16px;
+	max-width: 89.999999%;
+	
+	display: flex;
+	overflow: hidden;
+}
+.header .logo {
+	margin: 0 auto;
+	text-align: center;
+}
+.header .logo-title {
+	display: block;
+	color: #fff;
+	font-weight: bold;
+	font-size: 4em;
+}
+.header .logo-slogan {
+	display: block;
+	margin-top: 15px;
+	color: #ddd;
+}
+.header .img-logo {
+	display: inline-flex;
+	width: 120px;
+	height: 120px;
+}
+
+@media screen and (max-width: 600px) {
+	.header {
+		max-width: 100%;
+	}
+	
+	.header .img-logo {
+		display: none;
+	}
+}
+
+
+.header p:hover {
+	color: #fff;
+}
+
+/* navigation bar */
+.navbar {
+	/* bl */
+}
+
+.fixed-top {
+	position: fixed;
+	top: 0;
+	width: 100%;
+}
+
+.fixed-bottom {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+}
+
+.fixed-left {
+	position: fixed;
+	left: 0;
+	width: 25%;
+	overflow: auto;
+}
+
+.fixed-right {
+	position: fixed;
+	right: 0;
+	width: 25%;
+	overflow: auto;
+}
+
+.navbar.fixed-left ul li, .navbar.fixed-left ul li.nav-item-right{
+	display: inline;
+	float: none;
+}
+.navbar.fixed-right ul li, .navbar.fixed-left ul li.nav-item-left {
+	display: inline;
+	float: none;
+}
+/* only stick if you can fit */
+@media (min-height: 300px) {
+	.sticky {
+	position: -webkit-sticky; /* Safari */
+	position: sticky;
+	top: 0;
+	}
+}
+
+.navbar ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: #333;
+}
+
+.navbar ul li {
+	float: left;
+}
+
+.navbar ul li.nav-item-left {
+	float: left;
+}
+
+.navbar ul li.nav-item-right {
+	float: right;
+}
+
+.navbar ul li a {
+	display: block;
+	color: #f2f2f2;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+}
+/* Change the link color to #111(black) on hover */
+.navbar ul li:hover:not(.active) a {
+	background-color: #ddd;
+	color: #111;
+}
+.navbar ul li:active:not(.active) a {
+	background-color: #aaa;
+}
+
+.navbar ul li.active a {
+	background-color: #4CAF50;
+	font-weight: bold;
+	color: #fff;
+}
+
+/* container */
+.wrapper {
+	margin: 0 auto;
+	padding: 16px;
+	max-width: 89.999999%;
+	overflow: auto;
+}
+.container {
+	float: left;
+	width: 69.99999%;
+	/*min-height: 1020px;*/
+}
+
+.sidebar {
+	float: right;
+	width: 24.99999%;
+}
+
+.clearfix:after {
+	content: "";
+	display: table;
+	clear: both;
+}
+
+@media screen and (max-width: 768px) {
+	.container {
+		padding-bottom: 16px;
+		float: none;
+		width: 100%;
+	}
+
+	.sidebar {
+		float: none;
+		width: 100%;
+	}
+}
+
+@media screen and (max-width: 500px) {
+	.wrapper {
+		max-width: 100%;
+	}
+}
+
+/* footer */
+footer {
+	margin: 0 auto;
+}
+
+footer .copyright {
+	background-color: #222;
+	color: #f2f2f2;
+	padding: 14px 16px;
+	text-align: center;
+}
+
+footer .copyright a {
+	color: #fff;
+	font-weight: bold;
+}
+
+.hide-scroll {
+	scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+}
+.hide-scroll::-webkit-scrollbar { /* WebKit */
+    width: 0;
+    height: 0;
+}
+
+.vertical {
+	text-orientation: upright;
+	writing-mode: vertical-rl;
+	white-space: nowrap;
+	display: block;
+}
+.rotate-vertical {
+	-webkit-transform:rotate(90deg);
+    -moz-transform:rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform:rotate(90deg);
+    transform: rotate(90deg);
+    white-space:nowrap;
+    display:block;
+}
+/* start main styling */
+.container section {
+	/* padding-top: 16px; */
+	padding-bottom: 16px;
+	border-bottom: 1px dashed #ddd; 
+}
+
+.page-title {
+	border-bottom: 1px solid #ddd; 
+	margin-bottom: 16px;
+}
+.page-title a {
+	color: blue;
+	cursor: pointer;
+	text-decoration: none;
+}
+.page-title a:hover {
+	color: red;
+}
+.page-title a:active {
+	color: black;
+}
+.page-title a:visited {
+	/* || */
+}
+
+.manga-list {
+	margin: 0 auto;
+	/*background-color: red;*/
+	overflow: hidden;
+}
+
+.manga-home {
+	margin: 0 auto;
+	/*background-color: red;*/
+	overflow: hidden;
+}
+
+.manga-item {
+	display: inline-block;
+	position: relative;
+	width: 23.99999%;
+	/* min-height: 405px; */
+	margin-right: 3px;
+	margin-bottom: 6px;
+	overflow: hidden;
+	background-color: #f3f3f3;
+	border-radius: 8px;
+	border: 1px solid #ccc;
+	overflow: hidden;
+}
+
+.manga-item:hover {
+	border: 1px solid #0af;
+}
+.manga-item a:hover {
+	text-decoration: none;
+}
+
+img.manga-cover {
+	width: 100%;
+	height: 256px;
+	/* border-radius: 8px 8px 0 0; */
+}
+
+.manga-meta {
+	background-color: #fff;
+	color: #aaa;
+	padding: 4px;
+	font-size: .9em;
+	min-height: calc(100% - 730px);
+	/* border-radius: 0 0 8px 8px; */
+}
+.manga-meta .manga-title {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	color: #000;
+}
+.manga-meta .manga-title-alt, .manga-meta .manga-author, .manga-meta .manga-artist, .manga-meta .manga-view {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.manga-meta-details {
+	display: none;
+	z-index: 999;
+	position: absolute;
+	background-color: rgb(24,24,24);
+	right: -50%;
+	top: 10;
+	overflow: auto;
+}
+
+@media only screen and (max-width: 1005px) {
+	.manga-item {
+		width: 31.99999%;
+	}
+}
+
+@media only screen and (max-width: 700px) {
+	.manga-item {
+		width: 47.99999%;
+	}
+}
+
+@media only screen and (max-width: 500px) {
+	.manga-item {
+		width: 99.99999%;
+		margin: 6px 0;
+	}
+	
+	img.manga-cover {
+		height: auto;
+	}
+	
+	.manga-detail article img {
+		float: none;
+		min-width: 100%;
+		margin: 0 0 8px 0;
+		/* background-color: #ada; */
+	}
+	
+	.manga-detail article table {
+		padding: 8px 0 0 0;
+	}
+}
+
+.manga-detail {
+	overflow: hidden;
+}
+.manga-detail article {
+	position: relative;
+	overflow: hidden;
+	
+	padding: 4px;
+	border-radius: 8px;
+	border: 1px dashed #ddd;
+}
+.manga-detail article img {
+	float: left;
+	/* padding: 0px; */
+	margin: 0 8px 0 0;
+	width: 256px;
+}
+.manga-detail article table {
+	overflow-wrap: break-word;
+}
+.manga-detail article table tr {
+	vertical-align: text-top;
+}
+.manga-detail article table tr td:first-child {
+	min-width: 96px;
+}
+.manga-detail article table tr td:last-child {
+	padding-left: 16px;
+}
+
+.manga-detail .chapter-list {
+	/* overflow-y: scroll; */
+}
+.manga-detail .hide-scroll {
+	overflow-y: scroll;
+	
+	max-height: 256px;
+}
+
+.manga-detail #showChapter {
+	background-color: #ccc;
+	color: #fff;
+	cursor: pointer;
+	
+	overflow: hidden;
+	
+	white-space: nowrap;
+	text-align: center;
+	
+	padding: 2px;
+	margin-top: 6px;
+}
+.manga-detail #showChapter:hover {
+	background-color: #bbb;
+	color: #fff;
+}
+.manga-detail #showChapter:active {
+	background-color: #aaa;
+	color: #fff;
+}
+.manga-detail .chapter-list div {
+	padding: 1px;
+}
+.manga-detail .chapter-list div span {
+	float: right;
+	margin: -20px 4px 0 0 ;
+	font-style: italic;
+	font-size: .75em;
+	/* background-color: #eee; */
+}
+.manga-detail .chapter-list div a {
+	display: block;
+	padding: 3px;
+	
+	color: #000;
+	background-color: #eee;
+}
+.manga-detail .chapter-list div a:hover {
+	color: #fff;
+	background-color: #ddd;
+}
+.manga-detail .chapter-list div a:hover, .manga-detail .chapter-list div a:visited:hover {
+	color: #a0a;
+}
+.manga-detail .chapter-list div a:visited {
+	color: #999;
+}
+
+.manga-reader{
+	/* background-color: #ccc; */
+	overflow: hidden;
+}
+.manga-reader article{
+	margin-bottom: 16px;
+}
+.manga-reader article img{
+	width: 99.999%;
+}
+
+.manga-reader .hl {
+	
+}
+.manga-reader .hl .images img {
+	border: 1px dashed #ddd;
+}
+.manga-reader .hl .images .img {
+	display: none;
+}
+.manga-reader .hl .images img.show{
+	display: inherit; !important
+}
+.manga-reader .hr {
+	
+	
+	/*
+	height: 75%; 
+	overflow-x: scroll;
+	overflow-y: hidden;
+	white-space: nowrap;
+	border-radius: 5px;
+	*/
+}
+.manga-reader .hr .images img {
+	border: 1px dashed #ddd;
+}
+.manga-reader .hr .images .img {
+	display: none;
+	margin: 0 0 6px 0;
+	
+	/*
+	float: right;
+	display:inline-block;
+    *display:inline;/* For IE7*/
+    *zoom:1;/* For IE7*/
+    vertical-align:top;
+	*/
+}
+.manga-reader .hr .images img.show{
+	display: inherit; !important
+}
+.manga-reader .v {
+	
+}
+.manga-reader .v .images img {
+	border: 1px dashed #ddd;
+}
+.manga-reader .v .images .img {
+	margin: 0 0 6px 0;
+}
+.manga-reader .w {
+	
+}
+.manga-reader .w .images img {
+	border-left: 1px dashed #ccc;
+	border-right: 1px dashed #ccc;
+}
+.manga-reader .w .images img:first-child {
+	border-top: 1px dashed #ccc;
+}
+.manga-reader .w .images img:last-child {
+	border-bottom: 1px dashed #ccc;
+}
+.manga-reader .w .images .img {
+	margin: 0;
+}
+
+.manga-reader .images-control {
+	text-align: center;
+}
+.manga-reader .images-control button {
+	width: 45%;
+}
+.manga-reader .images-control button#prevPage {
+	float: none;
+}
+.manga-reader .images-control button#nextPage {
+	float: none;
+}
+
+.manga-reader .paginator {
+	text-align: center;
+	background-color: #eee;
+	border-radius: 5px;
+	padding: 16px 4px 4px 4px;
+	
+	position: relative;
+	
+	overflow: hidden;
+}
+.manga-reader .paginator .prev-button {
+	position: absolute;
+	left: 8px;
+}
+.manga-reader .paginator .next-button {
+	position: absolute;
+	right: 8px;
+}
+.manga-reader .paginator .paginator-selector {
+	margin-top: 36px;
+}
+.manga-reader .paginator .paginator-select-page {
+	margin: 0 auto;
+	width: 100%; 
+	height: 32px;
+	cursor: pointer;
+	/*
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	*/
+}
+.manga-reader .paginator .back-button {
+	margin-top: 16px;
+	
+}
+.side-box {
+	margin-bottom: 16px;
+	text-align: center;
+}
+.side-box .sb-title {
+	border: #D1D6DC 1px solid;
+	border-top-right-radius: 6px;
+	border-top-left-radius: 6px;
+	padding: 8px 4px;
+}
+.side-box .sb-content {
+	border: #D1D6DC 1px solid;
+	padding: 8px 4px;
+}
+.side-box .sb-footer {
+	border: #D1D6DC 1px solid;
+	border-bottom-right-radius: 6px;
+	border-bottom-left-radius: 6px;
+	padding: 4px;
+
+	font-size: .75em;
+}
+
+.button {
+  font: bold 11px Arial;
+  text-decoration: none;
+  background-color: #EEEEEE;
+  color: #333333;
+  padding: 2px 6px 2px 6px;
+  border-top: 1px solid #CCCCCC;
+  border-right: 1px solid #333333;
+  border-bottom: 1px solid #333333;
+  border-left: 1px solid #CCCCCC;
+}
+
+.btn {
+    background-color: #EEEEEE;
+    padding: 8px 20px;
+    text-decoration:none;
+    font-weight:bold;
+    border-radius:5px;
+    cursor:pointer;
+}
+.btn:hover {
+    text-decoration:none;
+    background-color: #DDDDDD;
+}
+.btn:active {
+	background-color: #CCCCCC;
+}
+
+.btn-danger {
+    background-color:#FF0040;
+    color: #FFFFFF;
+}
+.btn-danger:hover {
+    background-color:#EB003B;
+    color: #FFFFFF;
+}
+.btn-danger:active {
+	background-color: #DDDDDD;
+}
+
+.btn-success {
+    background-color:#00EB89;
+    color: #FFFFFF;
+}
+.btn-success:hover {
+    background-color:#00D77E;
+    color: #FFFFFF;
+}
+.btn-success:active {
+	background-color: #DDDDDD;
+}
+
+.btn-warning {
+    background-color:#FFA500;
+    color: #FFFFFF;
+}
+.btn-warning:hover {
+    background-color:#EB9800;
+    color: #FFFFFF;
+}
+.btn-warning:active {
+	background-color: #DDDDDD;
+}
+
+.btn-info {
+    background-color:#00D4FF;
+    color: #FFFFFF;
+}
+.btn-info:hover {
+    background-color:#00C4EB;
+    color: #FFFFFF;
+}
+.btn-info:active {
+	background-color: #DDDDDD;
+}
+
+.btn-default {
+    background-color:#D1D6DC;
+    color: #000000;
+}
+.btn-default:hover {
+    background-color:#DCE0E5;
+    color: #555555;
+}
+.btn-default:active {
+	background-color: #CCCCCC;
+}

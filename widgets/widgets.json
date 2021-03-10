@@ -1,0 +1,5 @@
+{
+	"navigation":{"name":"navigation","type":"link"},
+	"pages":{"name":"pages","type":"page"},
+	"sidebar":{"name":"sidebar","type":"widget"}
+}

@@ -1,0 +1,329 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+<head>
+	<!-- Required meta tags -->
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, shrink-to-fit=no, user-scalable=no" />
+	
+	<!-- Required meta tags for web content -->
+	<meta name="author" content="<%web_author%>">
+	<meta name="description" content="<%web_desc%>">
+	<meta name="keywords" content="<%web_keyword%>">
+
+	<!-- Head page title -->
+	<title><%web_title%><%app_title%></title>
+
+	<!-- Fonts and icons -->
+	<link rel="icon" type="image/x-icon" href="<%app_icon%>" />
+	<link rel="shortcut icon" type="image/x-icon" href="<%app_icon%>" />
+
+	<!-- Style & CSS -->
+	<link rel="stylesheet" type="text/css" href="<%app_asset%>/css/style.css?time=<%time%>">
+	<!-- Themes Assets -->
+	<link rel="stylesheet" type="text/css" href="<%theme_asset%>/css/style.css?time=<%time%>">
+	<!-- <link rel="preload" href="<%theme_asset%>/js/style.js?time=<%time%>" as="script"> -->
+	<script src="<%theme_asset%>/js/style.js?time=<%time%>"></script>
+	<script src="<%app_asset%>/vendor/jquery/jquery-3.5.1.min.js"></script>
+
+	<style type="text/css">
+		.form {
+		    min-width: 300px;
+		    background: white;
+		}
+		h1.login-title {
+		    color: #666;
+		    margin: 0px auto 25px;
+		    font-size: 25px;
+		    font-weight: 300;
+		    text-align: center;
+		}
+		.login-input {
+		    font-size: 15px;
+		    border: 1px solid #ccc;
+		    padding: 10px;
+		    margin-bottom: 25px;
+		    height: 30px;
+		    width: 100%;/*calc(100% - 23px);*/
+		}
+		.login-input:focus {
+		    border-color:#6e8095;
+		    outline: none;
+		}
+		.login-button {
+		    color: #fff;
+		    background: #55a1ff;
+		    border: 0;
+		    outline: 0;
+		    width: 100%;
+		    height: 50px;
+		    font-size: 16px;
+		    text-align: center;
+		    cursor: pointer;
+		}
+		.login-button:hover {
+		    color: #fff;
+		    background: #81b9ff;
+		}
+		.login-button:active {
+		    color: #fff;
+		    background: #0f7aff;
+		}
+		.login-button:disabled {
+		    color: #fff;
+		    background: #ccc;
+		    cursor: default;
+		}
+		.link {
+		    color: #666;
+		    font-size: 15px;
+		    text-align: center;
+		    margin-bottom: 0px;
+		}
+		.link a {
+		    color: #666;
+		}
+
+		.error {
+			color: red;
+			background-color: #eee;
+			border-radius: 5px;
+			text-align: center;
+			/*padding: 10px;
+			border: black 1px dashed;
+			border-radius: 5px;*/
+		}
+
+		.hide {
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<header>
+		<div class="header">
+			<img src="<%app_logo%>" class="img-logo">
+			<span class="logo">
+				<div class="logo-title">
+					<%app_title%>
+				</div>
+				<div class="logo-slogan">
+					<%app_slogan%>
+				</div>
+			</span>
+		</div>
+		<nav>
+			<div class="navbar sticky">
+				<ul>
+					<li class="active">
+						<a href="<%app_home%>">Home</a>
+					</li>
+					<li>
+						<a href="<%app_home%>/manga/list">Manga List</a>
+					</li>
+					<li>
+						<a href="<%app_home%>/pages/contact">Contact</a>
+					</li>
+					<li class="nav-item-right">
+						<a href="<%app_home%>/pages/about">About</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+	</header>
+
+	<div class="wrapper">
+		<div class="page-title">
+			<%page_title%>
+		</div>
+		<div class="container">
+			<%content%>
+			
+			<section class="dashboard">
+				<div class="form">
+					<p>Hey, User!</p>
+					<p>You are now at user dashboard page.</p>
+					<p><a href="/member/logout">Logout</a></p>
+				</div>
+			</section>
+
+			<section class="login">
+				<form class="form" action="/member/login" method="post" name="login">
+					<h1 class="login-title">Login</h1>
+					<div class="error"></div>
+					<label>Account :
+						<input type="text" class="login-input" name="user_name" placeholder="Username" autofocus="true" required/>
+					</label>
+					<label>Password :
+						<input type="password" class="login-input" name="password" placeholder="Password" required/>
+					</label>
+					<label>Secret Key :
+						<input type="password" pattern="[0-9]+" class="login-input" name="s_key" placeholder="Secret Key" required/>
+					</label>
+					<button class="login-button" type="submit">Login</button>
+					<p class="link"><a href="/member/register">Register here</a> | <a href="/member/forgot">Forgot your password?</a></p>
+			  </form>
+			</section>
+
+			<section class="registration">
+				<form class="form" action="/member/register" method="post">
+					<h1 class="login-title">Registration</h1>
+					<div class="error"></div>
+					<div class="error"></div>
+					<label>Your Username :
+						<input type="text" class="login-input" name="user_name" placeholder="Username" required/>
+					</label>
+					<label>Your E-Mail :
+						<input type="email" class="login-input" name="e_mail" placeholder="E-Mail Adress" required/>
+					</label>
+					<label>Your Name :
+						<input type="text" class="login-input" name="first_name" placeholder="First Name" required/>
+					</label>
+					<label>Your Last Name :
+						<input type="text" class="login-input" name="last_name" placeholder="Last Name"/>
+					</label>
+					<label>Your Password :
+						<input type="password" class="login-input" name="password" placeholder="Password" required/>
+					</label>
+					<label>Your Secret Key : 
+						<input type="number" class="login-input" name="s_key" placeholder="Secret Key" required/>
+					</label>
+					
+					<button class="login-button" type="submit">Register</button>
+
+					<p class="link"><a href="/member/login">Login here</a> | <a href="/member/forgot">Forgot your password?</a></p>
+					<p style="font-size: .75em;">
+						*) Secret key is key used for hashing your password.<br>
+						**) Your secret key is not saved in database, so note it yourself.
+					</p>
+			    </form>
+			    <script type="text/javascript">
+					$(function(){
+
+						function set_message_usn(msg,clr){
+							$('.registration .error').first().css('color',clr);
+							$('.registration .error').first().text(msg);
+						}
+						function set_message_eml(msg,clr){
+							$('.registration .error').last().css('color',clr);
+							$('.registration .error').last().text(msg);
+						}
+
+				    	$("input[name='user_name']").change(function(){
+							/* Get from elements values */
+							var values = $(this).serialize();
+
+							$.ajax({
+								url: "/member/username",
+								type: "post",
+								data: values ,
+								success: function (response) {
+									
+									if (response!=='1') {
+										set_message_usn("* Username Available","green");
+										usn = true;
+									}else{
+										set_message_usn("x Username UnAvailable","red");
+										usn = false;
+									}
+									// You will get response from your PHP page (what you echo or print)
+								},
+								error: function(jqXHR, textStatus, errorThrown) {
+									console.log(textStatus, errorThrown);
+								}
+							});
+						});
+						$("input[name='e_mail']").change(function(){
+							/* Get from elements values */
+							var values = $(this).serialize();
+
+							$.ajax({
+								url: "/member/email",
+								type: "post",
+								data: values ,
+								success: function (response) {
+									
+									if (response!=='1') {
+										set_message_eml("* E-Mail Available","green");
+										eml = true;
+									}else{
+										set_message_eml("x E-Mail UnAvailable","red");
+										eml = false;
+									}
+									// You will get response from your PHP page (what you echo or print)
+								},
+								error: function(jqXHR, textStatus, errorThrown) {
+									console.log(textStatus, errorThrown);
+								}
+							});
+						});
+				    });
+			    </script>
+			</section>
+
+			<section class="forgot">
+				<form class="form" action="/member/forgot" method="post">
+					<div class="error"></div>
+					<p>Hey, forgot your password!?</p>
+					<label>Input your E-Mail here :
+						<input type="email" class="login-input" name="forgot" placeholder="something@example.com" required />
+					</label>
+					<button class="login-button" type="submit">Ask</button>
+					<p class="link"><a href="/member/login">Login here</a> | <a href="/member/register">Need account?</a></p>
+				</form>
+			</section>
+
+			<section class="logout">
+				Redirecting to login page ... <span class="timer">3</span>
+				<p>Click <a class="link" href="/member/login">HERE</a> if not automatically redirected</p>
+				<script type="text/javascript">
+					function counter(time, url){
+						var interval = setInterval(function(){
+							$('.logout > .timer').text(time-1);
+							time = time - 1;
+
+							if(time == 0){
+								clearInterval(interval);
+								window.location = url;
+							}
+						}, 1000);
+					}
+					$(function(){
+						counter(3, '/member/login');
+					});
+				</script>
+			</section>
+		</div>
+		<div class="sidebar">
+			<div class="side-box">
+				<div class="sb-title">Widget Title</div>
+				<div class="sb-content">Widget Content</div>
+				<div class="sb-footer">Widget Footer</div>
+			</div>
+			<div class="side-box">
+				<div class="sb-content">
+					<form action="#">
+						<input type="text" name="search" style="width: 100%; margin-bottom: 4px;">
+						<button type="submit" style="width: 100%;">Search</button>
+					</form>
+				</div>
+				<div class="sb-footer">Search Bar</div>
+			</div>
+		</div>
+	</div>
+
+	<br>
+	
+	<footer>
+		<div class="copyright">
+			Manga Reader
+			&copy;
+			<script>document.write(new Date().getFullYear())</script>.
+			<br>
+			Made with <span>❤</span> by
+			<a href="https://www.zulfikar.xyz" target="_blank">Mz Zulfikar</a> for a better www.
+		</div>
+		<!-- your footer here -->
+	</footer>
+</body>
+</html>
