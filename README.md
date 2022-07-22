@@ -1,4 +1,7 @@
 # Doo-Rex
+
+INCOMPLETE / WIP / JUST IDEA
+
 a webcomic reader and management cms, kinda.
 this is a messy code developed by an amateur self-proclaimed programmer without any optimization whatsover, beware, you have been warned.
 i will be very happy if someone can help me develop this kinda mainstream web app.
