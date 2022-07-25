@@ -9,8 +9,8 @@ i will be very happy if someone can help me develop this kinda mainstream web ap
 # Setup
 1. clone to your drive
 2. put in your webserver dir
-3. access that dir, then
-4. goto {dir}/install.php
+3. access that webdir, then
+4. goto web {dir}/install.php
 5. back to index
 
 # Misc.
