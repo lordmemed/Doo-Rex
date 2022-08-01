@@ -148,7 +148,7 @@ CREATE TABLE IF NOT EXISTS `group_stat` (
 
 function insert_data(){
 return "
-INSERT INTO `member` VALUES (`admin`,`123456`,`admin123456@gmail.com`,`Administrator`,`Hasan Al-Rauf`,`Deskripsi`,`15-10-1996`,`19-09-2020`);
+INSERT INTO `member` VALUES (`admin`,`$2y$10$3IoELQyGNBzIBYAqoSx5SOewh9JKK8Vcl0cD9sJQoRxBoxCLWjFie`,`admin123456@gmail.com`,`Administrator`,`Hasan Al-Rauf`,`Deskripsi`,`10-10-1990`,`19-09-2020`);
 ";
 }
 
