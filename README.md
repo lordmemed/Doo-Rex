@@ -16,3 +16,4 @@ i will be very happy if someone can help me develop this kinda mainstream web ap
 # Misc.
 1. /member -> user area
 2. /maestro -> admin area
+3. Admin login, Username: admin Password: 123456
