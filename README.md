@@ -17,3 +17,11 @@ i will be very happy if someone can help me develop this kinda mainstream web ap
 1. /member -> user area
 2. /maestro -> admin area
 3. Admin login, Username: admin Password: 123456
+
+# Screenshots
+1. Home
+![Homepage](https://github.com/lordmemed/Doo-Rex/blob/development/assets/img/web1.jpg)
+2. Lists
+![Homepage](https://github.com/lordmemed/Doo-Rex/blob/development/assets/img/web2.jpg)
+3. Item Details
+![Homepage](https://github.com/lordmemed/Doo-Rex/blob/development/assets/img/web3.jpg)
