@@ -123,13 +123,14 @@ $router->set404(function () use ($pq)
 // Before Router Middleware
 $router->before('GET', '/.*', function ()
 {
-	header('X-Powered-By: Bram.US/Router');
+	//header('X-Powered-By: Bram.US/Router');
+	header('X-Powered-By: DooRex v1.0');
 });
 
 
 $router->get('/hash', function ()
 {
-	echo password_hash($_GET['pw'].$_GET['key'], PASSWORD_BCRYPT);
+	echo password_hash($_GET['pw'], PASSWORD_BCRYPT);
 	exit();
 });
 $router->get('/svg', function ()
@@ -171,7 +172,7 @@ $router->get('/', function () use ($pq, $db)
 		}
 		$manga->rating = $_manga_stat->rating;
 		$manga->view = $_manga_stat->view;
-			$_manga[] = $manga;
+		$_manga[] = $manga;
 	}
 
 	//clone manga item
@@ -187,7 +188,7 @@ $router->get('/', function () use ($pq, $db)
 		if ($manga->cover!=='-') {
 			$item->assign_attr('.manga-cover', 'src', get_manga_location().$manga->url.'/'.$manga->cover); 
 		} else {
-			$item->assign_attr('.manga-cover', 'src', get_app_asset().'/img/no-title.jpg'); 
+			$item->assign_attr('.manga-cover', 'src', get_app_asset().'/img/no-title.jpg');
 		}
 
 		$item->assign('.manga-title', $manga->title); //assign manga title to item
@@ -235,8 +236,6 @@ $router->get('/manga/list', function () use ($pq, $db)
 	$pq->remove_class('.navbar > ul > li', 'active');
 	$pq->add_class('.navbar > ul > li', 'active', 1);
 
-	$pq->remove('.manga-list > article > ul');
-
 	$mangas = $db->read('manga', []); //get all manga stdClass object
 	usort($mangas, fn($a, $b) => strcmp(ucfirst($a->title), ucfirst($b->title))); //sort by title
 	$_mangas['*']=[];
@@ -245,30 +244,80 @@ $router->get('/manga/list', function () use ($pq, $db)
 	{
 		if(!is_letter($manga->title[0]))
 		{
-			$_mangas['*'][] = ['id'=>$manga->id, 'title'=>$manga->title];
+			$_mangas['*'][] = ['id'=>$manga->id, 'title'=>$manga->title, 'cover'=>$manga->cover, 'url'=>$manga->url];
 		} else {
-			$_mangas[ucfirst($manga->title[0])][] = ['id'=>$manga->id, 'title'=>$manga->title];
+			$_mangas[ucfirst($manga->title[0])][] = ['id'=>$manga->id, 'title'=>$manga->title, 'cover'=>$manga->cover, 'url'=>$manga->url];
 		}
 	}
+
+	/* Old List, title only
+	//
+	
+	$pq->remove('.manga-list > article > ul');
+	
 	//loop list
 	foreach ($_mangas as $key => $manga)
 	{
-		$pq->assign('.manga-list > article', $pq->pnode('ul',['class'=>(($key!=='*') ? $key : 'All'),'style'=>'list-style:none;padding-left:0;'])->assign('.'.(($key!=='*') ? $key : 'All'), $pq->pnode('b')->assign('b',$key)), true)->save();
+		$pq->assign('.manga-list > article', $pq->pnode('ul',['class'=>(($key!=='*') ? $key : 'All'),'style'=>'padding-left:0;'])->assign('.'.(($key!=='*') ? $key : 'All'), $pq->pnode('b')->assign('b',$key)), true)->save();
 		foreach ($manga as $idx => $val)
 		{
 			$pq->assign('.manga-list > article > .'.(($key!=='*') ? $key : 'All'), $pq->pnode('li')
 					->assign('li',
 						$pq->pnode('a', ['href'=>get_app_url().'/manga/'.$val['id']])
 						->assign('a',$val['title'])
-				), true);
+				)->assign_attr('li', 'style', 'margin-left: 19px; list-style: circle;'), true);
 		}
 	}
+	//
+	*/
+
+	//* function list manga with image
+
+	$pq->remove('.manga-list-small > ul.item');
+
+    foreach ($_mangas as $key => $manga) {
+        $class = '.'.(($key!=='*') ? $key : 'All');
+
+        $pq->assign('.manga-list-small', 
+            $pq->pnode('ul', ['class'=>'item '.substr($class, 1)])
+            ->assign($class, $pq->pnode('div')
+                ->assign('div', $pq->pnode('b')->assign('b',(($key!=='*') ? $key : '#ALL')))
+                ->assign('div', ' '.$pq->pnode('span')->assign('span','('.count($manga).' Title)'), true))
+            , true)->save();
+
+        foreach ($manga as $idx => $val)
+		{
+			//print_r($val);
+        	//assign manga cover image source
+			if ($val['cover']!=='-') {
+				$img = get_manga_location().$val['url'].'/'.$val['cover'];
+			} else {
+				$img = get_app_asset().'/img/no-title.jpg'; 
+			}
+			
+			$pq->assign('.manga-list-small > '.$class, 
+                $pq->pnode('li')->assign('li',
+                    $pq->pnode('a', ['title' => $val['title'],
+                    'href' => get_app_url().'/manga/'.$val['id']])
+                    ->assign('a', 
+                        $pq->pnode('img', ['src'=>'/imager/thumb?url='.rawurlencode($img)])
+                    )
+                    ->assign('a', 
+                        $pq->pnode('div')->assign('div', $val['title'])
+                        , true
+                    )
+                )
+                , true);
+		}
+
+    }
+	//
 
 	return; //echo $pq->html(true);
 });
 
 //manga & chapter
-// ([A-Z­a-z­0-9­-]+) => $url
+// ([A-Za-z0-9-]+) => $url
 $router->get('/manga/([1-9]\d*)', function ($mid) use ($pq, $db, $router)
 {
 	//$dts=microtime(true);;
@@ -300,8 +349,30 @@ $router->get('/manga/([1-9]\d*)', function ($mid) use ($pq, $db, $router)
 			$manga->view = $mstat->view;
 		}
 
+		switch ($manga->rate) {
+			case 'e':
+				$manga->rate = 'Everyone';
+				break;
+			case 'r13':
+				$manga->rate = 'R13+';
+				break;
+			case 'r15':
+				$manga->rate = 'R15+';
+				break;
+			case 'r18':
+				$manga->rate = 'R18+';
+				break;
+		}
+
 		$pq->assign('title', ' - '.$manga->title, true);
-		$pq->assign('.page-title', $pq->pnode('a')->assign('a', 'Manga').' &raquo; '.$manga->title);
+		$pq->assign('.page-title', 
+			$pq->pnode('ul', ['class' => 'breadcrumb'])
+				->assign('ul', 
+					$pq->pnode('li')->assign('li', $pq->pnode('a')->assign('a', 'Read'))
+				)->assign('ul',
+					$pq->pnode('li')->assign('li', $pq->pnode('span', ['title' => $manga->title])->assign('span', $manga->title)), true
+				)
+		);
 
 		//assign manga cover image source
 		if ($manga->cover!=='-') {
@@ -315,6 +386,7 @@ $router->get('/manga/([1-9]\d*)', function ($mid) use ($pq, $db, $router)
 		$pq->assign('.manga-author', $manga->author); //assign manga author to item
 		$pq->assign('.manga-artist', $manga->artist); //assign manga artist to item
 		$pq->assign('.manga-status', ucfirst($manga->status)); //assign manga status to item
+		$pq->assign('.manga-rate', $manga->rate); //assign manga rate to item
 		$pq->assign('.manga-rating', $manga->rating.' / 10.0'); //assign manga rating to item
 		$pq->assign('.manga-view', $manga->view.' Views'); //assign manga views to item
 		if($manga->uploader_type==='member')
@@ -322,7 +394,7 @@ $router->get('/manga/([1-9]\d*)', function ($mid) use ($pq, $db, $router)
 			$member = $db->read('member', ['where' => "`id`=$manga->uploader_id"], 'one');
 			//assign link & link text
 			$pq->assign_attr('.manga-uploader a', 'href', get_app_url().'/member/'.$member->id);
-			$pq->assign('.manga-uploader a', $member->nickname);
+			$pq->assign('.manga-uploader a', $member->fullname);
 		}else{
 			//$group = $db->read('group', ['where' => "`id`=$manga->uploader_id"], 'one');
 		}
@@ -345,7 +417,7 @@ $router->get('/manga/([1-9]\d*)', function ($mid) use ($pq, $db, $router)
 				$t=strtotime($chapter->upload_date);
 				$dt=date('d-m-Y H:i', $t);
 				//echo $dt.'<br>';
-				$uploader = $db->read('member', ['where' => "`id`=$chapter->uploader_id"], 'one')->nickname;
+				$uploader = $db->read('member', ['where' => "`id`=$chapter->uploader_id"], 'one')->fullname;
 				$item->assign('a', $item->pnode('span', ['style'=>'float: right; margin-top: 2px;'])->assign('span', $uploader.' // '.dayToID($dt).' '.$dt), true);
 				$chapter_item.="\r\n".$item->html();
 			}
@@ -427,10 +499,24 @@ $router->get('/manga/([1-9]\d*)/chapter/([1-9]\d*)', function ($mid, $cid) use (
 				sort($chapters);
 				//then set current reading chapter
 				$chapter = $chapters[($cid-1)];
-							$pq->assign('title',' - '.$chapter->title, true);
+				$pq->assign('title',' - '.$chapter->title, true);
+				
+				$dir = 'assets/content'.$chapter->url;
 
-				$pq->assign('.page-title', $pq->pnode('a')->assign('a', 'Manga').' &raquo; '.$pq->pnode('a', ['href'=>'/manga/'.$manga->id])->assign('a', $manga->title).' &raquo; '.$chapter->title);
-							$dir = 'assets/content'.$chapter->url;
+				$pq->assign('.page-title', 
+				$pq->pnode('ul', ['class' => 'breadcrumb'])
+					->assign('ul', 
+						$pq->pnode('li')->assign('li', $pq->pnode('a')->assign('a', 'Read'))
+					)->assign('ul',
+						$pq->pnode('li')->assign('li', 
+							$pq->pnode('a', ['href' => '/manga/'.$manga->id, 'title' => $manga->title])->assign('a', 
+								$pq->pnode('span')->assign('span', $manga->title))
+						), true
+					)->assign('ul', 
+						$pq->pnode('li')->assign('li', $pq->pnode('span')->assign('span', $chapter->title)), true
+					)
+			);
+
 				$dir = array_values(array_diff(scandir($dir), [".", "..", "...", ".nomedia", "Thumb.db"]));
 				if(empty($dir)) $dir[]='no-img'; 
 				if($manga->read_mode==='hr') $dir = array_reverse($dir);
@@ -464,7 +550,7 @@ $router->get('/manga/([1-9]\d*)/chapter/([1-9]\d*)', function ($mid, $cid) use (
 					$pq->remove_class('.images .img', 'img');
 					$pq->assign('.images-control', $pq->get_element('#pageNumber'));
 				}
-							if (count($chapters) > 1)
+				if (count($chapters) > 1)
 				{
 					$item = $pq->clone('.paginator'); //clone paginator
 					$pq->remove('.paginator'); //remove from the layout
@@ -488,21 +574,23 @@ $router->get('/manga/([1-9]\d*)/chapter/([1-9]\d*)', function ($mid, $cid) use (
 						$item->assign('.next-button a', 'Last Chapter');
 						$item->assign_attr('.back-button a', 'href', get_app_url().'/manga/'.$mid);
 					}
-					foreach($chapters as $chapter){
-						if ($chapter->cid === $cid)
-						{ 
-							$item_o->assign_attr('option', 'selected', 'true');
+					foreach($chapters as $ichapter){
+						if (($ichapter->cid) == $cid)
+						{
+							$item_o->assign_attr('option', 'selected', '');
 						} else {
 							$item_o->assign_attr('option', 'selected', null);
 						}
-											$item_o->assign_attr('option', 'value', get_app_url().str_replace('-','/',$chapter->url));
-						$item_o->assign('option', $chapter->title);
+						
+						$item_o->assign('option', $ichapter->title);
+						$item_o->assign_attr('option', 'value', get_app_url().str_replace('-','/',$ichapter->url));
 						$item->assign('select', $item_o->html(), true);
 					}
+
 					$pagination=$item->html();
 					$item->cleanup();
 					$item_o->cleanup();
-									$pq->assign('.manga-reader', $pagination, true);
+					$pq->assign('.manga-reader', $pagination, true);
 				} else {
 					//if the manga just have 1 chapter then clean paginator
 					$pq->assign('.paginator', 'No More Chapter'); //set the paginator with 'no more/next chapter'
@@ -510,7 +598,7 @@ $router->get('/manga/([1-9]\d*)/chapter/([1-9]\d*)', function ($mid, $cid) use (
 			} else {
 				$pq->assign('title',' - No Chapter',true);
 				$pq->assign('.page-title','No Chapter. Yet?');
-							$pq->assign('.manga-reader', $pq->pnode('p')->assign('p', 'It seems Chapter '.$cid.' is not available.'));
+				$pq->assign('.manga-reader', $pq->pnode('p')->assign('p', 'It seems Chapter '.$cid.' is not available.'));
 				$pq->assign('.manga-reader', $pq->pnode('img',['style'=>'width: 100%;', 'src'=>get_app_asset().'/img/no-chapter.jpg']), true);
 			}
 
@@ -566,14 +654,23 @@ $router->get('/search', function () use ($pq)
 
 	//load template to dom
 	$pq->load_str_html(loadTemplate('main'));
+
+	//remove all section except for home section
+	$pq->remove('.manga-home');
+	$pq->remove('.page-title');
+	$pq->remove('.manga-list');
+	$pq->remove('.manga-detail');
+	$pq->remove('.manga-reader');
+	$pq->save();
+
 	if (isset($_GET['q']) && !empty($_GET['q']))
 	{
-		echo 'Search for : '.urldecode($_GET['q']);
+		$pq->assign('.manga-search', 'Search for : '.urldecode($_GET['q']));
 	} else {
-		echo '<form action="search">
-	<input type="text" name="q" style="width: 100%; margin-bottom: 4px;">
-	<button type="submit" style="width: 100%;">Search</button>
-</form>';
+		$pq->assign('.manga-search', '<form action="search">
+				<input type="text" name="q" style="width: 100%; margin-bottom: 4px;">
+				<button type="submit" style="width: 100%;">Search</button>
+			</form>');
 	}
 });
 
@@ -682,9 +779,9 @@ $router->mount('/maestro', function() use ($router, $pq, $db)
 	//maestro home
 	$router->get('/', function () use ($pq, $db)
 	{
+		//$_SESSION['ref'] = $_SERVER['REQUEST_URI'];
 		$member = new Member($db);
 		$member->auth(1);
-		//$_SESSION['ref'] = $_SERVER['REQUEST_URI'];
 		//load template to dom
 		$pq->load_str_html(loadTemplate('admin'));
 		$pq->assign('title',' - Maestro Dashboard', true);
@@ -692,7 +789,10 @@ $router->mount('/maestro', function() use ($router, $pq, $db)
 		{
 			//header('Location: /member');
 			//$pq->remove('.page-header > nav', true);
-			$pq->remove('.page-content > .search-and-user');
+			//$pq->remove('.page-content > .search-and-user');
+			$pq->assign('.search-and-user > form', '');
+			$pq->remove('.search-and-user .notifications .badge');
+
 			$pq->assign('.page-content > .grid', $pq->clone('.page-content > .grid > .non-member')->html(true));
 			//$pq->remove('.page-content > .grid > article');
 			$pq->assign('.page-header > nav', $pq->clone('.page-header > nav > .logo')->html(true));
@@ -703,6 +803,8 @@ $router->mount('/maestro', function() use ($router, $pq, $db)
 			$pq->remove('.page-content > .group-chats');
 			$pq->remove('.page-content > .notifications');
 			$pq->remove('.page-content > .settings');
+
+			$pq->assign('.admin-profile > span.greeting', 'not in grup '.$member->get_user($_SESSION['ss_user'], 'username')->full_name);
 
 		} else {
 
@@ -758,12 +860,297 @@ $router->mount('/maestro', function() use ($router, $pq, $db)
 
 			$pq->remove('.addit-manga');
 			$pq->remove('.addit-chapter');
-			$pq->assign('.projects h1', 'Your Project');
+			//$pq->assign('.projects h1', 'Your Project');
+			$pq->remove('.projects h1');
+			$pq->assign('.search-and-user h1', 'Your Project');
+
+			$_manga = [];
+			foreach ($db->read('manga', ['where' => '`uploader_id` = '.$member->get_user($_SESSION['ss_user'], 'username')->user_id]) as $idx => $manga)
+			{
+				$_manga_stat = $db->read('manga_stat', ['where' => '`mid` = '.$manga->id], 'one');
+				if (!$_manga_stat)
+				{
+					$manga->rating = 0;
+					$manga->view = 0;
+				}
+				$manga->rating = $_manga_stat->rating;
+				$manga->view = $_manga_stat->view;
+				$_manga[] = $manga;
+			}
+
+			//clone manga item
+			$item = $pq->clone('.project-list .p-item');
+			//loop trough databases and assign value to manga item
+			$manga_item = null; //declare variable first
+			foreach ($_manga as $manga)
+			{
+				//assign manga cover image source
+				if ($manga->cover!=='-') {
+					$item->assign_attr('.p-cover img', 'src', get_manga_location().$manga->url.'/'.$manga->cover); 
+				} else {
+					$item->assign_attr('.p-cover img', 'src', get_app_asset().'/img/no-title.jpg'); 
+				}
+
+				$uri = trim(strtok($_SERVER['REQUEST_URI'], '?'));
+				$uri = substr($uri, strlen($uri)-1)!=='/' ? $uri : substr($uri, 0, strlen($uri)-1);
+
+				$item->assign_attr('a', 'href', $uri.'/'.$manga->id); //assign manga title to item
+				$item->assign('.p-title', $manga->title); //assign manga title to item
+				$item->assign('.p-status span', ucfirst($manga->status)); //assign manga status to item
+
+				$manga_item .= "\r\n".$item->html(); //add each item to the variable
+			}
+
+			//$item = $pq->clone('.project-list .p-item');
+
+			//assign manga cover image source
+			$item->assign_attr('.p-cover img', 'src', get_app_asset().'/img/no-title.jpg');
+			$item->assign_attr('.p-cover img', 'height', '90%');
+
+			$item->assign_attr('a','href', '/maestro/projects/add-manga');  //assign link to item
+			$item->assign('.p-title', '+ ADD MANGA'); //assign title to item
+			$item->remove('.p-status');
+
+
+			//$item->cleanup(); //clean up item pq dom
+
+			//remove home section childs
+			$pq->remove('.project-list .pt-item', true);
+			//assign new manga list item to section
+			$pq->assign('.project-list .pt-item', $manga_item, true);
+			//assign add manga button
+			$pq->assign('.project-list .pt-item', $item->html(true), true);
 		}
 
 		return; //echo $pq->html(true);
 	});
-	$router->get('/add-manga', function () use ($pq, $db)
+
+	$router->get('/projects/([1-9]\d*)', function ($mid) use ($pq, $db)
+	{
+		$member = new Member($db);
+		//$member->auth(1);
+		//load template to dom
+		$pq->load_str_html(loadTemplate('admin'));
+		$pq->assign('title',' - Maestro ID:'.$mid, true);
+
+		$pq->remove('.search-and-user > form > input');
+		$pq->remove('.search-and-user > form > button');
+		$pq->remove('.search-and-user .notifications .badge');
+
+		$pq->remove('.page-content > .dashboard');
+		$pq->remove('.page-content > .members');
+		$pq->remove('.page-content > .statistics');
+		$pq->remove('.page-content > .group-chats');
+		$pq->remove('.page-content > .notifications');
+		$pq->remove('.page-content > .settings');
+
+		$pq->remove('.page-header > nav > div.logo');
+		$pq->remove('.page-content > .grid > .non-member');
+
+		$pq->assign('.admin-profile > span.greeting', $member->get_user($_SESSION['ss_user'], 'username')->full_name);
+
+		$pq->remove('.addit-manga');
+		$pq->remove('.addit-chapter');
+		//$pq->assign('.projects h1', 'Your Project');
+		$pq->remove('.projects h1');
+		$pq->assign('.search-and-user h1', 'Your Project');
+
+		$chapters = $db->read('chapter', [ 'where'=> "`mid`=$mid" ]);
+		if(!empty($chapters)){
+			//clone ch item
+			$item = $pq->clone('.project-list .p-item');
+			//loop trough databases and assign value to chapter item
+			$chapter_item = null; //declare variable first
+			//echo htmlentities($item->html(true));
+			//sort the right order first
+			sort($chapters);
+			//the repeat
+			foreach ($chapters as $chapter)
+			{
+				$t=strtotime($chapter->upload_date);
+				$dt=date('d-m-Y', $t);
+				
+				//assign manga cover image source
+				$item->assign_attr('.p-cover img', 'src', get_app_asset().'/img/no-title.jpg');
+				$item->assign_attr('.p-cover img', 'height', '50%');
+
+				$uploader = $db->read('member', ['where' => "`id`=$chapter->uploader_id"], 'one')->nickname;
+
+				$item->assign_attr('a','href',get_app_url().str_replace('-','/',$chapter->url));  //assign manga title to item
+				$item->assign('.p-title', $chapter->title); //assign manga title to item
+				$item->assign('.p-status', $item->pnode('span', ['style'=>'margin-top: 2px;'])->assign('span', 'By: '.$uploader.' <br/> Date: '.$dt)); //assign manga status to item
+				
+				$chapter_item.="\r\n".$item->html();
+			}
+
+			//assign manga cover image source
+			$item->assign_attr('.p-cover img', 'src', get_app_asset().'/img/no-title.jpg');
+			$item->assign_attr('.p-cover img', 'height', '90%');
+
+			$uploader = $db->read('member', ['where' => "`id`=$chapter->uploader_id"], 'one')->nickname;
+
+			$item->assign_attr('a','href', '/maestro/projects/'.$mid.'/add-chapter');  //assign link to item
+			$item->assign('.p-title', '+ ADD CHAPTER'); //assign title to item
+			$item->remove('.p-status');
+
+			$chapter_item.="\r\n".$item->html();
+			
+			$item->cleanup(); //clean up item pq dom
+			
+			$pq->assign('.project-list .pt-item', $chapter_item);
+		} else {
+			$item = $pq->clone('.project-list .p-item');
+
+			$pq->assign('.project-list .p-item','No chapter uploaded, yet.');
+
+			//assign manga cover image source
+			$item->assign_attr('.p-cover img', 'src', get_app_asset().'/img/no-title.jpg');
+			$item->assign_attr('.p-cover img', 'height', '90%');
+
+			$item->assign_attr('a','href', '/maestro/projects/'.$mid.'/add-chapter');  //assign link to item
+			$item->assign('.p-title', '+ ADD CHAPTER'); //assign title to item
+			$item->remove('.p-status');
+
+			$pq->assign('.project-list .pt-item', $item->html(true), true);
+		}
+
+		return;
+	});
+
+	$router->get('/projects/([1-9]\d*)/add-chapter', function ($mid) use ($pq, $db)
+	{
+		$member = new Member($db);
+		//$member->auth();
+		//load template to dom
+		$pq->load_str_html(loadTemplate('admin'));
+		$pq->assign('title',' - Maestro Projects', true);
+		
+		$pq->remove('.search-and-user > form > input');
+		$pq->remove('.search-and-user > form > button');
+		$pq->remove('.search-and-user .notifications .badge');
+
+		$pq->remove('.page-content > .dashboard');
+		$pq->remove('.page-content > .members');
+		$pq->remove('.page-content > .statistics');
+		$pq->remove('.page-content > .group-chats');
+		$pq->remove('.page-content > .notifications');
+		$pq->remove('.page-content > .settings');
+
+		$pq->remove('.page-header > nav > div.logo');
+		$pq->remove('.page-content > .grid > .non-member');
+
+		$pq->assign('.admin-profile > span.greeting', $member->get_user($_SESSION['ss_user'], 'username')->full_name);
+
+		$pq->remove('.project-list');
+		$pq->remove('.addit-manga');
+		//$pq->assign('.projects h1', 'Add Chapter');
+		$pq->remove('.projects h1');
+		$pq->assign('.search-and-user h1', 'Add Chapter');
+
+		$pq->assign_attr('#mid', 'value', $mid);
+
+		//try to predict next manga[id]
+		$cid = ($db->row_count('chapter', $mid, 'mid') < 1) ? 1 : $db->row_count('chapter', $mid, 'mid')+1;
+		$pq->assign_attr('#cid', 'value', $cid);
+
+		return; //echo $pq->html(true);
+	});
+
+	//maestro add chapter post
+	$router->post('/projects/add-chapter', function () use ($pq, $db)
+	{
+		$member = new Member($db);
+		$uid = $member->get_user($_SESSION['ss_user'], 'username')->user_id;
+
+		if (isset($_POST))
+		{
+			//print_r($_POST);
+			//set data array
+			$chapter = [
+				'mid' => $_POST['mid'],
+				'cid' => $_POST['cid'],
+				'url' => '/manga-'.$_POST['mid'].'/chapter-'.$_POST['cid'],
+				'title' => $_POST['title'],
+				'uploader_id' => $uid,
+				'upload_date' => date("Y-m-d H:i:s T", time())
+			];
+			//try to predict next chapter_stat->id
+			$csid = ($db->max_id('chapter_stat') < 1) ? 1 : $db->max_id('chapter_stat')+1;
+			$chapter_stat = [
+				'id' => $csid, /* this table not using auto_incremenet, hence why */
+				'mid' => $_POST['mid'],
+				'cid' => $_POST['cid'],
+				'view' => 0
+			];
+				//echo dump_arr($_POST, "'");
+			$db->save('chapter', $chapter);
+			$db->save('chapter_stat', $chapter_stat);
+			$cm = $db->row_count('chapter', $chapter['url'], 'url'); //search using unique key
+			$cms = $db->row_count('chapter_stat', $csid, 'id');
+
+			if($cm && $cms)
+			{
+				die('Saved succesfully.');
+			} else {
+				die('Save failed.');
+			}
+		}
+	});
+
+	$router->post('/upload', function () use ($db)
+	{
+		//check if there's a GET[url] parameter
+		if (!empty($_GET) || isset($_GET['url']))
+		{
+		    // Create directory if it does not exist
+		    if(!is_dir("assets/content/". $_GET['url'] ."/")) {
+		        mkdir("assets/content/". $_GET['url'] ."/", 0777);
+		    }
+		    $udir = 'assets/content/'.$_GET['url'].'/';
+		} else {
+			$udir = 'assets/upload/';
+		}
+
+		$ph = new Plupload\PluploadHandler(array(
+			'target_dir' => $udir,
+			'allow_extensions' => 'jpg,jpeg,png,gif'
+		));
+
+		$ph->sendNoCacheHeaders();
+		$ph->sendCORSHeaders();
+
+		if ($result = $ph->handleUpload()) {
+			die(json_encode(array(
+				'OK' => 1,
+				'info' => $result
+			)));
+		} else {
+			die(json_encode(array(
+				'OK' => 0,
+				'error' => array(
+					'code' => $ph->getErrorCode(),
+					'message' => $ph->getErrorMessage()
+				)
+			)));
+		}
+	});
+
+	$router->get('/projects/([1-9]\d*)/edit', function ($mid) use ($pq, $db)
+	{
+		//
+	});
+
+	$router->get('/projects/([1-9]\d*)/del-chapter', function ($mid) use ($pq, $db)
+	{
+		//
+	});
+
+	$router->get('/projects/([1-9]\d*)/del-project', function ($mid) use ($pq, $db)
+	{
+		//
+	});
+
+	$router->get('/projects/add-manga', function () use ($pq, $db)
 	{
 		$member = new Member($db);
 		$member->auth();
@@ -789,40 +1176,13 @@ $router->mount('/maestro', function() use ($router, $pq, $db)
 
 		$pq->remove('.project-list');
 		$pq->remove('.addit-chapter');
-		$pq->assign('.projects h1', 'Add Project');
+		//$pq->assign('.projects h1', 'Add Project');
+		$pq->remove('.projects h1');
+		$pq->assign('.search-and-user h1', 'Add Project');
 
 		return; //echo $pq->html(true);
 	});
-	$router->get('/add-chapter', function () use ($pq, $db)
-	{
-		$member = new Member($db);
-		$member->auth();
-		//load template to dom
-		$pq->load_str_html(loadTemplate('admin'));
-		$pq->assign('title',' - Maestro Projects', true);
-		
-		$pq->remove('.search-and-user > form > input');
-		$pq->remove('.search-and-user > form > button');
-		$pq->remove('.search-and-user .notifications .badge');
-
-		$pq->remove('.page-content > .dashboard');
-		$pq->remove('.page-content > .members');
-		$pq->remove('.page-content > .statistics');
-		$pq->remove('.page-content > .group-chats');
-		$pq->remove('.page-content > .notifications');
-		$pq->remove('.page-content > .settings');
-
-		$pq->remove('.page-header > nav > div.logo');
-		$pq->remove('.page-content > .grid > .non-member');
-
-		$pq->assign('.admin-profile > span.greeting', $member->get_user($_SESSION['ss_user'], 'username')->full_name);
-
-		$pq->remove('.project-list');
-		$pq->remove('.addit-manga');
-		$pq->assign('.projects h1', 'Add Chapter');
-
-		return; //echo $pq->html(true);
-	});
+	
 	//maestro members
 	$router->get('/members', function () use ($pq, $db)
 	{
@@ -853,6 +1213,9 @@ $router->mount('/maestro', function() use ($router, $pq, $db)
 
 			$pq->assign('.admin-profile > span.greeting', $member->get_user($_SESSION['ss_user'], 'username')->full_name);
 
+			//$pq->assign('.projects h1', 'Members');
+			$pq->remove('.projects h1');
+			$pq->assign('.search-and-user h1', 'Members');
 		}
 
 		return; //echo $pq->html(true);
@@ -887,6 +1250,9 @@ $router->mount('/maestro', function() use ($router, $pq, $db)
 
 			$pq->assign('.admin-profile > span.greeting', $member->get_user($_SESSION['ss_user'], 'username')->full_name);
 
+			//$pq->assign('.projects h1', 'Statistics');
+			$pq->remove('.projects h1');
+			$pq->assign('.search-and-user h1', 'Statistics');
 		}
 
 		return; //echo $pq->html(true);
@@ -921,6 +1287,9 @@ $router->mount('/maestro', function() use ($router, $pq, $db)
 
 			$pq->assign('.admin-profile > span.greeting', $member->get_user($_SESSION['ss_user'], 'username')->full_name);
 
+			//$pq->assign('.projects h1', 'Group Chats');
+			$pq->remove('.projects h1');
+			$pq->assign('.search-and-user h1', 'Group Chats');
 		}
 
 		return; //echo $pq->html(true);
@@ -955,6 +1324,9 @@ $router->mount('/maestro', function() use ($router, $pq, $db)
 
 			$pq->assign('.admin-profile > span.greeting', $member->get_user($_SESSION['ss_user'], 'username')->full_name);
 
+			//$pq->assign('.projects h1', 'Notifications');
+			$pq->remove('.projects h1');
+			$pq->assign('.search-and-user h1', 'Notifications');
 		}
 
 		return; //echo $pq->html(true);
@@ -989,13 +1361,16 @@ $router->mount('/maestro', function() use ($router, $pq, $db)
 
 			$pq->assign('.admin-profile > span.greeting', $member->get_user($_SESSION['ss_user'], 'username')->full_name);
 
+			//$pq->assign('.projects h1', 'Group Settings');
+			$pq->remove('.projects h1');
+			$pq->assign('.search-and-user h1', 'Group Settings');
 		}
 
 		return; //echo $pq->html(true);
 	});
 
 	//maestro add manga post
-	$router->post('/add-manga', function () use ($pq, $db)
+	$router->post('/projects/add-manga', function () use ($pq, $db)
 	{
 		$member = new Member($db);
 
@@ -1085,79 +1460,6 @@ $router->mount('/maestro', function() use ($router, $pq, $db)
 		}
 	});
 
-	//maestro add chapter post
-	$router->post('/add-chapter', function () use ($pq, $db)
-	{
-		if (isset($_POST))
-		{
-			//set data array
-			$chapter = [
-				'mid' => $_POST['mid'],
-				'cid' => $_POST['cid'],
-				'url' => '/manga-'.$_POST['mid'].'/chapter-'.$_POST['cid'],
-				'title' => $_POST['title'],
-				'upload_date' => date("Y-m-d H:i:s T", time())
-			];
-			//try to predict next chapter_stat->id
-			$csid = ($db->max_id('chapter_stat') < 1) ? 1 : $db->max_id('chapter_stat')+1;
-			$chapter_stat = [
-				'id' => $csid, /* this table not using auto_incremenet, hence why */
-				'mid' => $_POST['mid'],
-				'cid' => $_POST['cid'],
-				'view' => 0
-			];
-				//echo dump_arr($_POST, "'");
-			$db->save('chapter', $chapter);
-			$db->save('chapter_stat', $chapter_stat);
-			$cm = $db->row_count('chapter', $chapter['url'], 'url'); //search using unique key
-			$cms = $db->row_count('chapter_stat', $csid, 'id');
-
-			if($cm && $cms)
-			{
-				die('Saved succesfully.');
-			} else {
-				die('Save failed.');
-			}
-		}
-	});
-
-	$router->post('/upload', function ()
-	{
-		//check if there's a GET[url] parameter
-		if (!empty($_GET) || isset($_GET['url']))
-		{
-		    // Create directory if it does not exist
-		    if(!is_dir("assets/content/". $_GET['url'] ."/")) {
-		        mkdir("assets/content/". $_GET['url'] ."/", 0777);
-		    }
-		    $udir = 'assets/content/'.$_GET['url'].'/';
-		} else {
-			$udir = 'assets/upload/';
-		}
-
-		$ph = new Plupload\PluploadHandler(array(
-			'target_dir' => $udir,
-			'allow_extensions' => 'jpg,jpeg,png,gif'
-		));
-
-		$ph->sendNoCacheHeaders();
-		$ph->sendCORSHeaders();
-
-		if ($result = $ph->handleUpload()) {
-			die(json_encode(array(
-				'OK' => 1,
-				'info' => $result
-			)));
-		} else {
-			die(json_encode(array(
-				'OK' => 0,
-				'error' => array(
-					'code' => $ph->getErrorCode(),
-					'message' => $ph->getErrorMessage()
-				)
-			)));
-		}
-	});
 });
 
 //member pages
@@ -1167,7 +1469,7 @@ $router->mount('/member', function () use ($router, $pq, $db)
 	$router->get('/', function () use ($pq, $db)
 	{
 
-		$member = new Member;
+		$member = new Member($db);
 		$member->auth();
 
 		//load template to dom
@@ -1181,7 +1483,7 @@ $router->mount('/member', function () use ($router, $pq, $db)
 		$pq->assign('title',' - Your Dashboard', true);
 		$pq->assign('.page-title', 'Manage Your Account');
 
-		$pq->assign('.dashboard > div.form > p', 'Hey, '.$_SESSION['ss_user'].'!');
+		$pq->assign('.dashboard > div.form > p', 'Hey, <b>'.$member->get_user($_SESSION['ss_user'], 'username')->full_name.'</b> !');
 
 		return; //echo $pq->html(true);
 	});
@@ -1262,6 +1564,28 @@ $router->mount('/member', function () use ($router, $pq, $db)
 	$router->post('/register', function () use ($pq, $db)
 	{
 		//session start
+		require_once 'libs/securimage/securimage.php';
+		$securimage = new Securimage();
+
+		if ($securimage->check($_POST['captcha_code']) == false) {
+
+		//load template to dom
+			$pq->load_str_html(loadTemplate('member'));
+	
+			$pq->remove('.dashboard');
+			$pq->remove('.registration');
+			$pq->remove('.forgot');
+			$pq->remove('.logout');
+
+			$pq->remove('.page-title');
+
+			$pq->assign('title',' - Login', true);
+	
+			$pq->assign('.form > .error', 'The security code entered was incorrect. Please try again.');
+			
+			return; //echo $pq->html(true);
+		}
+		
 		if(isset($_POST['user_name'])){
 			$member = new Member($db);
 			$status = $member->register($_POST);
@@ -1291,6 +1615,38 @@ $router->mount('/member', function () use ($router, $pq, $db)
 	$router->post('/login', function () use ($pq, $db)
 	{
 		//session start
+		require_once 'libs/securimage/securimage.php';
+		$securimage = new Securimage();
+
+		//if ($securimage->check($_POST['captcha_code']) !== false) {
+			// the code was incorrect
+			// you should handle the error so that the form processor doesn't continue
+
+			// or you can use the following code if there is no validation or you do not know how
+			//echo "The security code entered was incorrect.<br /><br />";
+			//echo "Please go <a href='javascript:history.go(-1)'>back</a> and try again.";
+			//exit;
+		//}
+
+		if ($securimage->check($_POST['captcha_code']) == false) {
+
+		//load template to dom
+			$pq->load_str_html(loadTemplate('member'));
+	
+			$pq->remove('.dashboard');
+			$pq->remove('.registration');
+			$pq->remove('.forgot');
+			$pq->remove('.logout');
+
+			$pq->remove('.page-title');
+
+			$pq->assign('title',' - Login', true);
+	
+			$pq->assign('.form > .error', 'The security code entered was incorrect. Please try again.');
+			
+			return; //echo $pq->html(true);
+		}
+
 		if(isset($_POST['password'])){
 			$member = new Member($db);
 			$status = $member->login($_POST);
@@ -1306,6 +1662,7 @@ $router->mount('/member', function () use ($router, $pq, $db)
 				}else{
 					$member->auth(); //goto dashboard
 				}
+				//$pq->load_str_html(loadTemplate('member'));
 			}else{
 				//load template to dom
 				$pq->load_str_html(loadTemplate('member'));
@@ -1345,7 +1702,7 @@ $router->mount('/member', function () use ($router, $pq, $db)
 	});
 });
 
-$router->get('/pages/([A-Z­a-z­0-9­-]+)', function ($url) use ($pq, $db)
+$router->get('/pages/([A-Za-z0-9-]+)', function ($url) use ($pq, $db)
 {
 	$pq->load_str_html(loadTemplate('main'));
 	$pq->remove('.manga-list');
@@ -1379,6 +1736,7 @@ $router->get('/api/manga/([1-9]\d*)', function ($mid) use ($db)
 	header("Content-type: application/json; charset=utf-8");
 	//print it
 	echo $api->getManga($mid);
+	exit();
 });
 $router->get('/api/manga/([1-9]\d*)/chapter/([1-9]\d*)', function ($mid, $cid) use ($db)
 {
@@ -1388,6 +1746,7 @@ $router->get('/api/manga/([1-9]\d*)/chapter/([1-9]\d*)', function ($mid, $cid) u
 	header("Content-type: application/json; charset=utf-8");
 	//print it
 	echo $api->getChapter($mid, $cid);
+	exit();
 });
 $router->get('/api/member/([1-9]\d*)', function ($uid) use ($db)
 {
@@ -1397,6 +1756,7 @@ $router->get('/api/member/([1-9]\d*)', function ($uid) use ($db)
 	header('Access-Control-Allow-Origin: *');
 	header("Content-type: application/json; charset=utf-8");
 	echo json_encode($member->get_user($uid));
+	exit();
 });
 
 $router->get('/pages', function ()
@@ -1414,6 +1774,8 @@ $router->get('/pages', function ()
 	echo "<pre>";
 	print_r($widgets);
 	echo "</pre>";
+
+	exit();
 });
 $router->get('/image', function ()
 {
@@ -1423,12 +1785,17 @@ $router->get('/image', function ()
 		imagejpeg(make_wrapped_txt("URL is empty"));
 		return;
 	} else {
-		$url = str_replace(' ', '%20', str_replace('https', 'http', urldecode($_GET['url'])));
+		$url = str_replace('https', 'http', urldecode($_GET['url']));
+		$url = str_replace('http://'.$_SERVER['HTTP_HOST'].'/', '', $url);
 	}
 
 	if(!isset($_GET['qc']) || empty(['qc'])) $quality=75;
 	else $quality = $_GET['qc'];
 
+	$context = stream_context_create(array(
+    	'http' => array('ignore_errors' => true),
+	));
+	//file_get_contents ( string $filename , bool $use_include_path = false , resource $context = ? , int $offset = 0 , int $maxlen = ? ) : string|false
 	if (!@file_get_contents($url)){
 		header('Content-type: image/jpeg');
 		imagejpeg(make_wrapped_txt("Images Failed to Load"));
@@ -1460,18 +1827,17 @@ $router->get('/image', function ()
 	{
 		$image = imagecreatefromjpeg($url);
 		if($resize===true){
-		$tmp = imagecreatetruecolor($width, $height);
-	    imagecopyresampled($tmp, $image, 0, 0, 0, 0, $width, $height, $info->width, $info->height);
+			$tmp = imagecreatetruecolor($width, $height);
+		    imagecopyresampled($tmp, $image, 0, 0, 0, 0, $width, $height, $info->width, $info->height);
 
-		imagejpeg($tmp, null, $quality);
-		imagedestroy($tmp);
-		imagedestroy($image);
+			imagejpeg($tmp, null, $quality);
+			imagedestroy($tmp);
+			imagedestroy($image);
 		}else{
-		imagejpeg($image, null, $quality);
-		imagedestroy($image);
+			imagejpeg($image, null, $quality);
+			imagedestroy($image);
 		}
-	} elseif ($info->mime == 'image/gif')
-	{
+	} elseif ($info->mime == 'image/gif') {
 		/*
 		$image = imagecreatefromgif($url);
 		if($resize===true){
@@ -1487,34 +1853,41 @@ $router->get('/image', function ()
 		}
 		*/
 		echo file_get_contents($url);
-	} elseif ($info->mime == 'image/png')
-	{
+	} elseif ($info->mime == 'image/png') {
 		$image = imagecreatefrompng($url);
 		if($resize===true){
-		$tmp = imagecreatetruecolor($width, $height);
-	    imagecopyresampled($tmp, $image, 0, 0, 0, 0, $width, $height, $info->width, $info->height);
+			$tmp = imagecreatetruecolor($width, $height);
+		    imagecopyresampled($tmp, $image, 0, 0, 0, 0, $width, $height, $info->width, $info->height);
 
-	    imagealphablending($tmp, false);
-		imagesavealpha($tmp, true);
+		    imagealphablending($tmp, false);
+			imagesavealpha($tmp, true);
 			imagepng($tmp, null, ($quality/10));
-		imagedestroy($tmp);
-		imagedestroy($image);
+			imagedestroy($tmp);
+			imagedestroy($image);
 		}else{
-		imagealphablending($image, false);
-		imagesavealpha($image, true);
+			imagealphablending($image, false);
+			imagesavealpha($image, true);
 			imagepng($image, null, ($quality/10));
-		imagedestroy($image);
+			imagedestroy($image);
 		}
 	} else {
 		echo file_get_contents($url);
 	}
 
+	exit();
+});
+
+$router->get('/secureimage_show', function ()
+{
+	include_once 'libs/securimage/securimage_show.php';
+
+	exit();
 });
 
 // Run the web!
 //$router->run();
 $router->run(function() use ($pq) {
-    $pq->print_html(true);
+    $pq->print_html();
 });
 
 ?>
