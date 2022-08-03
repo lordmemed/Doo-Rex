@@ -71,8 +71,22 @@ class Presenter
 	function get_element($el, $idx=0) {
 		return $this->_html->find($el,$idx);
 	}
+	//remove element
+	//e.g ;
+	//->remove('element_name') = delete all found element with the name
+	//->remove('element_name', index) = delete element with selected index number if the element is more than one
+	//->remove('element_name', true/false) = if true delete only the child element, else delete element
+	//can be combined ->remove('element_name', index, true/false)
+	//default is ->remove('element_name') = ->remove('element_name', 0, false)
 	function remove($el) {
 		$fn = func_get_args();
+		if (isset($fn[2])) {
+			if (is_bool($fn[2])) {
+				$child = $fn[2];
+			} else {
+				$child = false;
+			}
+		} 
 		if (isset($fn[1])) {
 			if (is_int($fn[1])) {
 				$idx = $fn[1];
@@ -88,13 +102,6 @@ class Presenter
 			$idx = 0;
 			$child = false;
 		}
-		if (isset($fn[2])) {
-			if (is_bool($fn[2])) {
-				$child = $fn[2];
-			} else {
-				$child = false;
-			}
-		}
 
 		if ($child!==true) {
 			$this->_html->find($el, $idx)->outertext = '';
@@ -105,6 +112,9 @@ class Presenter
 		return $this;
 	}
 
+	//prepend an element
+	//if ->prepend('element_name', content, index)
+	//then it will prepend the content of the selected index
 	function prepend($el, $with) {
 		$fn = func_get_args();
 		if (isset($fn[2])) {
@@ -121,8 +131,25 @@ class Presenter
 
 		return $this;
 	}
+	//replace an element content
+	//->assign('element_name', content) = will replace the content of selected element
+	//if ->assign('element_name', content, index)
+	//then it will replace only the selected index
+	//elseif ->assign('element_name', content, true)
+	//then append the element content
+	//elseif ->assign('element_name', content, false)
+	//then append the element content
+	//
+	//can be combined ->assign('element_name', content, index, true/false)
 	function assign($el, $with) {
 		$fn = func_get_args();
+		if (isset($fn[3])) {
+			if (is_bool($fn[3])) {
+				$append = $fn[3];
+			} else {
+				$append = false;
+			}
+		} 
 		if (isset($fn[2])) {
 			if (is_numeric($fn[2])) {
 				$idx = $fn[2];
@@ -138,13 +165,6 @@ class Presenter
 			$idx = 0;
 			$append = false;
 		}
-		if (isset($fn[3])) {
-			if (is_bool($fn[3])) {
-				$append = $fn[3];
-			} else {
-				$append = false;
-			}
-		}
 		
 		if ($append!==true) {
 			$this->_html->find($el, $idx)->innertext = $with;
@@ -154,6 +174,7 @@ class Presenter
 
 		return $this;
 	}
+	//replace the content in all of element
 	function assign_all($el, $in_el, $with) {
 		foreach ($this->_html->find($in_el) as $xel) {
 			foreach ($xel->find($el) as $cel) {
@@ -164,8 +185,16 @@ class Presenter
 
 		return $this;
 	}
+	//assign attribute to element
 	function assign_attr($el, $attr, $with) {
 		$fn = func_get_args();
+		if (isset($fn[4])) {
+			if (is_bool($fn[4])) {
+				$append = $fn[4];
+			} else {
+				$append = false;
+			}
+		} 
 		if (isset($fn[3])) {
 			if (is_numeric($fn[3])) {
 				$idx = $fn[3];
@@ -180,13 +209,6 @@ class Presenter
 		} else {
 			$idx = 0;
 			$append = false;
-		}
-		if (isset($fn[4])) {
-			if (is_bool($fn[4])) {
-				$append = $fn[4];
-			} else {
-				$append = false;
-			}
 		}
 
 		if ($append!==true) {
@@ -251,14 +273,43 @@ class Presenter
 		return $this;
 	}
 	
-	function replace() {
+	private function replace() {
 		//
 
 		return $this;
 	}
 
+	//create new element inside dom
+	//->pnode('element_name') = will only create the selected element/tags
+	//->pnode('element_name', content) = will only create the selected element/tags that support content (not single line closed tags) e.g div,a,p, etc.
+	//->pnode('element_name', attribute in array) = will create the selected element/tags with attribute;
+	//e.g, ->pnode('a', array('href'=>'#', 'title'=>'alt_title', 'style'=>'css_style'))
+	//can be combined ->pnode('element_name', content, array('attribute'=>'value'))
 	function pnode($el_name) {
-		$attrs = isset(func_get_args()[1]) ? func_get_args()[1] : false;
+		$fn=func_get_args();
+		if (isset($fn[2])) {
+			if (is_array($fn[2])) {
+				$attrs = $fn[2];
+			} else {
+				$attrs = false;
+			}
+		} 
+		if (isset($fn[1])) {
+			if (is_string($fn[1])) {
+				$content = $fn[1];
+			} else {
+				$content = '';
+			}
+			if (is_array($fn[1])) {
+				$attrs = $fn[1];
+			} else {
+				$attrs = false;
+			}
+		} else {
+			$content = '';
+			$attrs = false;
+		}
+
 		$attr=null; $el=null;
 
 		if ($attrs!==false) {
@@ -321,7 +372,7 @@ class Presenter
 				$el = "<$el_name$attr />"; //obsolete
 				break;
 			default:
-				$el = "<$el_name$attr></$el_name>";
+				$el = "<$el_name$attr>$content</$el_name>";
 				break;
 		}
 
