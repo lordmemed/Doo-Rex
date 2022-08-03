@@ -15,15 +15,19 @@ class Member
 	function get_clean_url() 
 	{
 		$uri = trim(strtok($_SERVER['REQUEST_URI'], '?'));
+		$uri = substr($uri, strlen($uri)-1)!=='/' ? $uri : substr($uri, 0, strlen($uri)-1);
 
 		return $uri;
 	}
 	function is_in_url()
 	{	
-		$nothing_arr = [
+		//$nothing_arr = $auth_route;
+
+		//routes that need authentication to access
+		$auth_route=[
 			'/maestro',
 			'/maestro/projects',
-			'/maestro/add-manga',
+			'/maestro/projects/add-manga',
 			'/maestro/add-chapter',
 			'/maestro/members',
 			'/maestro/statistics',
@@ -34,16 +38,17 @@ class Member
 			'/member/account',
 			'/member/settings'
 		];
-
-		if (in_array($this->get_clean_url(), $nothing_arr))
+		
+		if (in_array($this->get_clean_url(), $auth_route)) //$nothing_arr))
 		{
 			return true;
 		}
 		return false;
 	}
 
-	function auth($t=0)
+	function auth($t_pass=0)
 	{
+		//return;
 		//session_start(); //just be safe, start the session
 	    if(!isset($_SESSION["ss_auth"])) {
 			if ($this->get_clean_url()==='/member/login') {
@@ -51,19 +56,22 @@ class Member
 			}elseif ($this->get_clean_url()==='/member/register') {
 				return;
 			}else{
+				//set url ref
+				$_SESSION['ref'] = $_SERVER['REQUEST_URI'];
+				//set head
 				header("Location: /member/login");
-				exit();
+				//exit();
 			}
 	    }else{
 	    	if ($this->is_in_url()) {
 				return;
 			}else{
-		    	if ($t===0) {
+		    	if ($t_pass===0) {
 		    		header("Location: /member");
-		    		exit();
+		    		//exit();
 		    	} else {
 					header("Location: /maestro");
-					exit();
+					//exit();
 		    	}
 		    }
 
@@ -77,7 +85,7 @@ class Member
 			'email'=>$_data['e_mail'],
 			'fullname'=>$_data['first_name'].' '.$_data['last_name'],
 			'nickname'=>$_data['user_name'],
-			'password'=>$this->hash_password($_data['password'], (int)$_data['s_key']),
+			'password'=>$this->hash_password($_data['password']),
 			'description'=>'-',
 			'birth_date'=>date("Y-m-d H:i:s T", time()),
 			'join_date'=>date("Y-m-d H:i:s T", time())
@@ -89,7 +97,7 @@ class Member
 			return ['error'=>'E-Mail exists. Try Login.'];
 		} else {
 			if($this->db->save('member', $data)) { return true; }
-			else { return ['error'=>'Unexpected Error']; }
+			else { return ['error'=>'Unexpected Error, Contact admin.']; }
 		}
 		/*
 		$_S=date("Y-m-d H:i:s T", time());
@@ -109,17 +117,16 @@ class Member
 	{	
 		$data = [
 			'username'=>$_data['user_name'],
-			'password'=>$_data['password'],
-			'secret'=>(int)$_data['s_key']
+			'password'=>$_data['password']
 		];
 
 		//echo "<pre>";
 		if ($this->check_username($data['username'])) {
-			if ($this->verify_password($data['password'], $data['secret'], $this->load_password($data['username']))) {
+			if ($this->verify_password($data['password'], $this->load_password($data['username']))) {
 				return true;
 				//return ['error'=>'Welcome '.$data['username']];
 			} else {
-				return ['error'=>'Wrong password or secret key'];
+				return ['error'=>'Wrong password. Who are you?'];
 			}
 			
 		} else {
@@ -220,15 +227,15 @@ class Member
         else
             return 0;
     }
-	private function hash_password($password, $secret_key)
+	private function hash_password($password)
 	{
-		$pw = password_hash($password.$secret_key, PASSWORD_BCRYPT);
+		$pw = password_hash($password, PASSWORD_BCRYPT);
 		
 		return $pw;
 	}
-	private function verify_password($password, $secret_key, $hashed)
+	private function verify_password($password, $hashed)
 	{
-		if (password_verify($password.$secret_key, $hashed)) {
+		if (password_verify($password, $hashed)) {
 			return true;
 		} else {
 			return false;
@@ -266,7 +273,7 @@ class Member
 
 	function is_in_group($id)
 	{
-		$member = $this->db->row_count('group_stat', $id, 'uid');
+		$member = $this->db->row_count('member_stat', $id, 'uid');
 		if ($member) {
 			return true;
 		} else {
