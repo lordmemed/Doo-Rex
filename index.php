@@ -1711,6 +1711,16 @@ $router->get('/pages/([A-Za-z0-9-]+)', function ($url) use ($pq, $db)
 	$pq->remove('.manga-detail');
 	$pq->save();
 
+	//set active nav-link
+	//remove active status from current state
+	$pq->remove_class('.navbar > ul > li', 'active');
+	//change navbar active state based on index
+	if ($url==='contact') {
+		$pq->add_class('.navbar > ul > li', 'active', 2);
+	}elseif ($url==='about') {
+		$pq->add_class('.navbar > ul > li', 'active', 3);
+	}
+
 	$pq->remove('.page-title');
 
 	$pq->assign('.manga-home', $pq->pnode('h3')->assign('h3', ucfirst($url).' Page'));
