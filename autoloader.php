@@ -19,7 +19,6 @@
 spl_autoload_register(function($class){
    
     $class = ltrim($class, '\\');
-    //$namespace = 'XCore';
     
     $tmp = explode('\\', $class);
     $namespaces = $tmp[0];
@@ -30,7 +29,6 @@ spl_autoload_register(function($class){
     	
     	if(strpos($class, $namespaces) === 0)
     {
-        // $class = substr($class, strlen($namespaces));
         $path = '';
         if(($pos = strripos($class, '\\')) !== FALSE)
         {
@@ -40,9 +38,6 @@ spl_autoload_register(function($class){
         }
         $path .= str_replace('__', '/', $class) . '.php';
         $dir .= '/' . $path;
-        //echo "$dir<br>";
-        
-        // echo $dir;
         
         if(file_exists($dir))
         {
@@ -61,8 +56,6 @@ spl_autoload_register(function($class){
         
         $path = strtolower($classname) . '.php';
         $dir .= '/' . $path;
-        //echo "$dir<br>";
-        // echo $dir;
         
         if(file_exists($dir))
         {
@@ -74,18 +67,7 @@ spl_autoload_register(function($class){
     }
     
     }
-    
-    //$namespaces = substr($class, 0, strlen($classname)+1); // join($tmp, '\\');
-    
-    /* *
-    print_r($tmp);
-    echo " _ <br> _ namespace | ";
-    print_r($namespaces);
-    echo " _ <br> _ classname | ";
-    print_r($classname);
-    echo "<br>";
-    * */
-    
+   
     return false;
 
 });
